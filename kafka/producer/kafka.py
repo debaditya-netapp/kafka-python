@@ -389,6 +389,9 @@ class KafkaProducer(object):
         if self.config['compression_type'] == 'lz4':
             assert self.config['api_version'] >= (0, 8, 2), 'LZ4 Requires >= Kafka 0.8.2 Brokers'
 
+        if self.config['compression_type'] == 'zstd':
+            assert self.config['api_version'] >= (2, 1, 0), 'Zstd Requires >= Kafka 2.1.0 Brokers'
+
         # Check compression_type for library support
         ct = self.config['compression_type']
         if ct not in self._COMPRESSORS:

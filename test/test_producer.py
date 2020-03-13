@@ -23,7 +23,7 @@ def test_buffer_pool():
 
 
 @pytest.mark.skipif(not env_kafka_version(), reason="No KAFKA_VERSION set")
-@pytest.mark.parametrize("compression", [None, 'gzip', 'snappy', 'lz4'])
+@pytest.mark.parametrize("compression", [None, 'gzip', 'snappy', 'lz4', 'zstd'])
 def test_end_to_end(kafka_broker, compression):
 
     if compression == 'lz4':
@@ -33,6 +33,9 @@ def test_end_to_end(kafka_broker, compression):
         # python-lz4 crashes on older versions of pypy
         elif platform.python_implementation() == 'PyPy':
             return
+
+    if compression == 'zstd' and env_kafka_version() < (2, 1, 0):
+        return
 
     connect_str = ':'.join([kafka_broker.host, str(kafka_broker.port)])
     producer = KafkaProducer(bootstrap_servers=connect_str,
@@ -81,7 +84,7 @@ def test_kafka_producer_gc_cleanup():
 
 
 @pytest.mark.skipif(not env_kafka_version(), reason="No KAFKA_VERSION set")
-@pytest.mark.parametrize("compression", [None, 'gzip', 'snappy', 'lz4'])
+@pytest.mark.parametrize("compression", [None, 'gzip', 'snappy', 'lz4', 'zstd'])
 def test_kafka_producer_proper_record_metadata(kafka_broker, compression):
     connect_str = ':'.join([kafka_broker.host, str(kafka_broker.port)])
     producer = KafkaProducer(bootstrap_servers=connect_str,
@@ -91,6 +94,9 @@ def test_kafka_producer_proper_record_metadata(kafka_broker, compression):
     magic = producer._max_usable_produce_magic()
 
     # record headers are supported in 0.11.0
+    if compression == 'zstd' and env_kafka_version() < (2, 1, 0):
+        return
+
     if env_kafka_version() < (0, 11, 0):
         headers = None
     else:

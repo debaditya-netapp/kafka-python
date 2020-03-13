@@ -293,7 +293,9 @@ class Sender(threading.Thread):
             produce_records_by_partition[topic][partition] = buf
 
         kwargs = {}
-        if self.config['api_version'] >= (0, 11):
+        if self.config['api_version'] >= (2, 1):
+            version = 7
+        elif self.config['api_version'] >= (0, 11):
             version = 3
             kwargs = dict(transactional_id=None)
         elif self.config['api_version'] >= (0, 10):
