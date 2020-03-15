@@ -199,7 +199,7 @@ class Sender(threading.Thread):
                     if response.API_VERSION < 2:
                         partition, error_code, offset = partition_info
                         ts = None
-                    elif 3 <= response.API_VERSION <= 4:
+                    elif 2 <= response.API_VERSION <= 4:
                         partition, error_code, offset, ts = partition_info
                     elif 5 <= response.API_VERSION <= 7:
                         partition, error_code, offset, ts, log_start_offset = partition_info
