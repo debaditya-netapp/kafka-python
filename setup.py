@@ -24,8 +24,6 @@ class Tox(Command):
 
 
 test_require = ['tox', 'mock']
-if sys.version_info < (2, 7):
-    test_require.append('unittest2')
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -57,6 +55,7 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ]

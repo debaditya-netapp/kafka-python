@@ -1,7 +1,7 @@
 Kafka Python client
 ------------------------
 
-.. image:: https://img.shields.io/badge/kafka-0.10%2C%200.9%2C%200.8.2%2C%200.8.1%2C%200.8-brightgreen.svg
+.. image:: https://img.shields.io/badge/kafka-2.4%2C%202.3%2C%202.2%2C%202.1%2C%202.0%2C%201.1%2C%201.0%2C%200.11%2C%200.10%2C%200.9%2C%200.8-brightgreen.svg
     :target: https://kafka-python.readthedocs.io/compatibility.html
 .. image:: https://img.shields.io/pypi/pyversions/kafka-python.svg
     :target: https://pypi.python.org/pypi/kafka-python
@@ -16,9 +16,9 @@ Python client for the Apache Kafka distributed stream processing system.
 kafka-python is designed to function much like the official java client, with a
 sprinkling of pythonic interfaces (e.g., consumer iterators).
 
-kafka-python is best used with newer brokers (0.10 or 0.9), but is backwards-compatible with
-older versions (to 0.8.0). Some features will only be enabled on newer brokers,
-however; for example, fully coordinated consumer groups -- i.e., dynamic partition
+kafka-python is best used with newer brokers (0.9+), but is backwards-compatible with
+older versions (to 0.8.0). Some features will only be enabled on newer brokers.
+For example, fully coordinated consumer groups -- i.e., dynamic partition
 assignment to multiple consumers in the same group -- requires use of 0.9+ kafka
 brokers. Supporting this feature for earlier broker releases would require
 writing and maintaining custom leadership election and membership / health
@@ -70,6 +70,13 @@ that expose basic message attributes: topic, partition, offset, key, and value:
 >>> for msg in consumer:
 ...     assert isinstance(msg.value, dict)
 
+>>> # Access record headers. The returned value is a list of tuples
+>>> # with str, bytes for key and value
+>>> for msg in consumer:
+...     print (msg.headers)
+
+>>> # Get consumer metrics
+>>> metrics = consumer.metrics()
 
 KafkaProducer
 *************
@@ -110,6 +117,13 @@ for more details.
 >>> for i in range(1000):
 ...     producer.send('foobar', b'msg %d' % i)
 
+>>> # Include record headers. The format is list of tuples with string key
+>>> # and bytes value.
+>>> producer.send('foobar', value=b'c29tZSB2YWx1ZQ==', headers=[('content-encoding', b'base64')])
+
+>>> # Get producer performance metrics
+>>> metrics = producer.metrics()
+
 Thread safety
 *************
 
@@ -122,11 +136,19 @@ multiprocessing is recommended.
 Compression
 ***********
 
-kafka-python supports gzip compression/decompression natively. To produce or consume lz4 
-compressed messages, you should install python-lz4 (pip install lz4). 
+kafka-python supports gzip compression/decompression natively. To produce or consume lz4
+compressed messages, you should install python-lz4 (pip install lz4).
 To enable snappy compression/decompression install python-snappy (also requires snappy library).
 See <https://kafka-python.readthedocs.io/en/master/install.html#optional-snappy-install>
 for more information.
+
+Optimized CRC32 Validation
+**************************
+
+Kafka uses CRC32 checksums to validate messages. kafka-python includes a pure
+python implementation for compatibility. To improve performance for high-throughput
+applications, kafka-python will use `crc32c` for optimized native code if installed.
+See https://pypi.org/project/crc32c/
 
 Protocol
 ********
@@ -136,12 +158,4 @@ for interacting with kafka brokers via the python repl. This is useful for
 testing, probing, and general experimentation. The protocol support is
 leveraged to enable a KafkaClient.check_version() method that
 probes a kafka broker and attempts to identify which version it is running
-(0.8.0 to 0.10).
-
-
-Low-level
-*********
-
-Legacy support is maintained for low-level consumer and producer classes,
-SimpleConsumer and SimpleProducer. See
-<https://kafka-python.readthedocs.io/en/master/simple.html?highlight=SimpleProducer> for API details.
+(0.8.0 to 2.4+).
