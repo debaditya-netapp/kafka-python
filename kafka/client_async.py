@@ -636,7 +636,7 @@ class KafkaClient(object):
 
         for key, events in ready:
             if key.fileobj.fileno() < 0:
-                self._selector.unregister(key.fileobj)
+                time.sleep(0.1)
 
             if key.fileobj is self._wake_r:
                 self._clear_wake_fd()
