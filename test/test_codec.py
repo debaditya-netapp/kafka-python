@@ -22,7 +22,7 @@ def test_gzip():
     for i in range(1000):
         b1 = random_string(100).encode('utf-8')
         b2 = gzip_decode(gzip_encode(b1))
-        assert b1 == b2, "decompressed value differs from input value: %r vs %r" % (b2, b1)
+        assert b1 == b2
 
 
 @pytest.mark.skipif(not has_snappy(), reason="Snappy not available")
@@ -30,7 +30,7 @@ def test_snappy():
     for i in range(1000):
         b1 = random_string(100).encode('utf-8')
         b2 = snappy_decode(snappy_encode(b1))
-        assert b1 == b2, "decompressed value differs from input value: %r vs %r" % (b2, b1)
+        assert b1 == b2
 
 
 @pytest.mark.skipif(not has_snappy(), reason="Snappy not available")
@@ -91,7 +91,7 @@ def test_lz4():
         b1 = random_string(100).encode('utf-8')
         b2 = lz4_decode(lz4_encode(b1))
         assert len(b1) == len(b2)
-        assert b1 == b2, "decompressed value differs from input value: %r vs %r" % (b2, b1)
+        assert b1 == b2
 
 
 @pytest.mark.skipif(not has_lz4() or platform.python_implementation() == 'PyPy',
@@ -101,7 +101,7 @@ def test_lz4_old():
         b1 = random_string(100).encode('utf-8')
         b2 = lz4_decode_old_kafka(lz4_encode_old_kafka(b1))
         assert len(b1) == len(b2)
-        assert b1 == b2, "decompressed value differs from input value: %r vs %r" % (b2, b1)
+        assert b1 == b2
 
 
 @pytest.mark.skipif(not has_lz4() or platform.python_implementation() == 'PyPy',
@@ -113,7 +113,7 @@ def test_lz4_incremental():
         b1 = random_string(100).encode('utf-8') * 50000
         b2 = lz4_decode(lz4_encode(b1))
         assert len(b1) == len(b2)
-        assert b1 == b2, "decompressed value differs from input value: %r vs %r" % (b2, b1)
+        assert b1 == b2
 
 
 @pytest.mark.skipif(not has_zstd(), reason="Zstd not available")
@@ -121,4 +121,4 @@ def test_zstd():
     for _ in range(1000):
         b1 = random_string(100).encode('utf-8')
         b2 = zstd_decode(zstd_encode(b1))
-        assert b1 == b2, "decompressed value differs from input value: %r vs %r" % (b2, b1)
+        assert b1 == b2
