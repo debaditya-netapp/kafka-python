@@ -477,6 +477,13 @@ class DescribeAclsResponse_v1(Response):
                 ('permission_type', Int8)))))
     )
 
+
+class DescribeAclsResponse_v2(Response):
+    API_KEY = 29
+    API_VERSION = 2
+    SCHEMA = DescribeAclsResponse_v1.SCHEMA
+
+
 class DescribeAclsRequest_v0(Request):
     API_KEY = 29
     API_VERSION = 0
@@ -489,6 +496,7 @@ class DescribeAclsRequest_v0(Request):
         ('operation', Int8),
         ('permission_type', Int8)
     )
+
 
 class DescribeAclsRequest_v1(Request):
     API_KEY = 29
@@ -503,6 +511,17 @@ class DescribeAclsRequest_v1(Request):
         ('operation', Int8),
         ('permission_type', Int8)
     )
+
+
+class DescribeAclsRequest_v2(Request):
+    """
+    Enable flexible version
+    """
+    API_KEY = 29
+    API_VERSION = 2
+    RESPONSE_TYPE = DescribeAclsResponse_v2
+    SCHEMA = DescribeAclsRequest_v1.SCHEMA
+
 
 DescribeAclsRequest = [DescribeAclsRequest_v0, DescribeAclsRequest_v1]
 DescribeAclsResponse = [DescribeAclsResponse_v0, DescribeAclsResponse_v1]
@@ -861,4 +880,46 @@ CreatePartitionsRequest = [
 ]
 CreatePartitionsResponse = [
     CreatePartitionsResponse_v0, CreatePartitionsResponse_v1,
+]
+
+
+class DeleteGroupsResponse_v0(Response):
+    API_KEY = 42
+    API_VERSION = 0
+    SCHEMA = Schema(
+        ("throttle_time_ms", Int32),
+        ("results", Array(
+            ("group_id", String("utf-8")),
+            ("error_code", Int16)))
+    )
+
+
+class DeleteGroupsResponse_v1(Response):
+    API_KEY = 42
+    API_VERSION = 1
+    SCHEMA = DeleteGroupsResponse_v0.SCHEMA
+
+
+class DeleteGroupsRequest_v0(Request):
+    API_KEY = 42
+    API_VERSION = 0
+    RESPONSE_TYPE = DeleteGroupsResponse_v0
+    SCHEMA = Schema(
+        ("groups_names", Array(String("utf-8")))
+    )
+
+
+class DeleteGroupsRequest_v1(Request):
+    API_KEY = 42
+    API_VERSION = 1
+    RESPONSE_TYPE = DeleteGroupsResponse_v1
+    SCHEMA = DeleteGroupsRequest_v0.SCHEMA
+
+
+DeleteGroupsRequest = [
+    DeleteGroupsRequest_v0, DeleteGroupsRequest_v1
+]
+
+DeleteGroupsResponse = [
+    DeleteGroupsResponse_v0, DeleteGroupsResponse_v1
 ]
