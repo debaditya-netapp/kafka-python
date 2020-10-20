@@ -2,9 +2,10 @@ from __future__ import absolute_import
 
 import binascii
 import weakref
+import kafka
+import logging
 
 from kafka.vendor import six
-
 
 if six.PY3:
     MAX_INT = 2 ** 31
@@ -20,6 +21,7 @@ if six.PY3:
         return crc
 else:
     from binascii import crc32
+log = logging.getLogger(__name__)
 
 
 class WeakMethod(object):
@@ -64,3 +66,14 @@ class Dict(dict):
     See: https://docs.python.org/2/library/weakref.html
     """
     pass
+
+
+def get_client_factory(config):
+    if config.get('client_factory') is not None:
+        client_factory = config['client_factory']
+        assert callable(client_factory), "'client_factory' should be a callable or None, is {}".format(type(client_factory))
+        log.info("Initializing custom kafka client")
+    else:
+        client_factory = kafka.client_async.KafkaClient
+        log.info("Initializing normal kafka client")
+    return client_factory
