@@ -392,6 +392,7 @@ class KafkaClient(object):
                 return True
 
             conn.connect()
+            log.debug("Created connection to node %s", node_id)
             return conn.connected()
 
     def ready(self, node_id, metadata_priority=True):
@@ -581,8 +582,10 @@ class KafkaClient(object):
 
                 # Attempt to complete pending connections
                 for node_id in list(self._connecting):
+                    log.debug("Connecting to node %s", node_id)
                     self._maybe_connect(node_id)
 
+                log.debug("Nodes connection complete")
                 # Send a metadata request if needed
                 metadata_timeout_ms = self._maybe_refresh_metadata()
 
