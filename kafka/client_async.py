@@ -513,6 +513,9 @@ class KafkaClient(object):
         conn = self._conns.get(node_id)
         if not conn:
             return False
+        log.debug("Conn is present for node_id %s", node_id)
+        log.debug("Conn is connected? %s", conn.connected())
+        log.debug("Conn can send more? %s", conn.can_send_more())
         return conn.connected() and conn.can_send_more()
 
     def send(self, node_id, request, wakeup=True):
@@ -603,7 +606,8 @@ class KafkaClient(object):
                     if self.in_flight_request_count() == 0:
                         timeout = min(timeout, self.config['retry_backoff_ms'])
                     timeout = max(0, timeout)  # avoid negative timeouts
-
+                log.debug("timeout is: %s", timeout)
+                log.debug("metadata_timeout_ms is: %s", metadata_timeout_ms)
                 self._poll(timeout / 1000)
 
             # called without the lock to avoid deadlock potential
@@ -643,6 +647,7 @@ class KafkaClient(object):
 
         for key, events in ready:
             if key.fileobj.fileno() < 0:
+                log.debug("Is file no greater than zero")
                 time.sleep(0.1)
 
             if key.fileobj is self._wake_r:
