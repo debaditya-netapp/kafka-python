@@ -298,6 +298,8 @@ class KafkaClient(object):
 
                 if self.cluster.is_bootstrap(node_id):
                     self._bootstrap_fails = 0
+                    time.sleep(5)
+                    log.debug("sleeping for 5 sec")
 
                 else:
                     for node_id in list(self._conns.keys()):
