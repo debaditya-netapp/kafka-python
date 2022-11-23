@@ -589,6 +589,7 @@ class KafkaClient(object):
                     self._maybe_connect(node_id)
 
                 log.debug("Nodes connection complete")
+                time.sleep(5)
                 # Send a metadata request if needed
                 metadata_timeout_ms = self._maybe_refresh_metadata()
 
