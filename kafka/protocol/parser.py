@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import collections
 import logging
+import time
 
 import kafka.errors as Errors
 from kafka.protocol.commit import GroupCoordinatorResponse
@@ -56,6 +57,7 @@ class KafkaProtocol(object):
             correlation_id
         """
         log.debug('Sending request %s', request)
+        time.sleep(5)
         if correlation_id is None:
             correlation_id = self._next_correlation_id()
 
