@@ -371,7 +371,7 @@ class BrokerConnection(object):
             else:
                 log.debug('%s: creating new socket', self)
                 assert self._sock is None
-                time.sleep(5)
+                time.sleep(1)
                 log.debug('sleeping now..')
                 self._sock_afi, self._sock_addr = next_lookup
                 if self.config["socks5_proxy"] is not None:
@@ -405,7 +405,7 @@ class BrokerConnection(object):
             # Connection succeeded
             if not ret or ret == errno.EISCONN:
                 log.debug('%s: established TCP connection', self)
-                time.sleep(5)
+                time.sleep(1)
                 log.debug('sleeping now..')
 
                 if self.config['security_protocol'] in ('SSL', 'SASL_SSL'):
